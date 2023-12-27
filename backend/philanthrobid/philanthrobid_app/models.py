@@ -2,7 +2,7 @@ from django.db import models
 
 # Update serializers.py and admin.py when a model is added, deleted or updated
 
-class User(models.Model):
+class User(models.Model):   #No need for name
     username = models.CharField(max_length=256)
     email = models.CharField(max_length=256)
     name = models.CharField(max_length=256)
@@ -21,9 +21,10 @@ class Listing(models.Model):
         return self.title
 
 
-class Bidder(models.Model):
+class Bidder(models.Model):             
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     money_spent = models.IntegerField()
+    
 
     def __str__(self):
         return self.user.username

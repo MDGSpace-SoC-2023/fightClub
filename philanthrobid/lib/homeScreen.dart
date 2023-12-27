@@ -78,8 +78,10 @@ class _homeScreen extends State<homeScreen> {
               break;
             }
             case 2:{
+              
               Navigator.push(context,MaterialPageRoute(builder:(BuildContext context){
                 return const settings();
+                
 
               })
 
