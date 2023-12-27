@@ -1,9 +1,9 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import "package:philanthrobid/addAListing.dart";
 import "package:philanthrobid/settings.dart";
 import "package:philanthrobid/leaderboard.dart";
-
-
 
 class homeScreen extends StatefulWidget {
   const homeScreen({super.key});
@@ -13,85 +13,198 @@ class homeScreen extends StatefulWidget {
 }
 
 class _homeScreen extends State<homeScreen> {
-  final TextEditingController _searchController=TextEditingController();
-  int _currentIndex=0;
+  int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    Widget page;
+    String text;
+
+    switch (_currentIndex) {
+      case 0:
+        page = HomePage();
+        text = "Home";
+        break;
+
+      case 1:
+        page = Leaderboard();
+        text = "Leaderboard";
+        break;
+
+      case 2:
+        page = settings();
+        text = "Settings";
+        break;
+
+      default:
+        throw UnimplementedError("No widget for selected Index");
+    }
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, //removes default backbutton since the homepage is not home according to flutter
-        title: const Text("Home",style:TextStyle(color:Colors.white),),
+        automaticallyImplyLeading:
+            false, //removes default backbutton since the homepage is not home according to flutter
+        title: Text(
+          text,
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
-        backgroundColor:const Color.fromARGB(255, 246, 179, 202),
+        backgroundColor: theme.colorScheme.primary,
       ),
-      body:Stack(children:[CustomScrollView(slivers: [SliverAppBar(expandedHeight: 40, floating:true,
-      automaticallyImplyLeading:false,
-      title:TextField(controller:_searchController,
-      decoration:InputDecoration(hintText:"Search",
-      suffixIcon:IconButton(icon:const Icon(Icons.clear,color:Colors.black),onPressed:(){
-        _searchController.clear();
-      })),
-      ),),
-      
-      ],
-      //Rest of the body below this 
+      body: Column(children: [
+        Expanded(
+            child: Container(
+          color: theme.colorScheme.background,
+          child: page,
+        )),
+      ]),
+      bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          fixedColor: theme.colorScheme.primary,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.leaderboard),
+              label: "Leaderboard",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: "Settings",
+            ),
+          ],
+          onTap: (int index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          }),
+    );
+  }
+}
 
+class HomePage extends StatelessWidget {
+  final TextEditingController _searchController = TextEditingController();
 
-      ),
-      Positioned(top:580,left:328,child:CircleAvatar(radius:28,backgroundColor:Color.fromARGB(255, 246, 179, 202), child:Center(child:IconButton(iconSize:40,
-      icon:const Icon(Icons.add,color:Colors.white,),
-      onPressed:(){
-        Navigator.push(context,
-        MaterialPageRoute(builder: (BuildContext context){
-          return addAListing();
-        }
-        )
-        );
-
-      },//onPressed
-      )
-      )
-      )
-      )
-      ]
-      )
-      ,
-      bottomNavigationBar:BottomNavigationBar(
-        currentIndex: _currentIndex,
-        fixedColor:const Color.fromARGB(255, 246, 179, 202),
-        items:const [
-          BottomNavigationBarItem(icon: Icon(Icons.home),label:"Home",),
-          BottomNavigationBarItem(icon: Icon(Icons.leaderboard),label:"Leaderboard",),
-          BottomNavigationBarItem(icon: Icon(Icons.settings),label:"Settings",),
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Stack(children: [
+      ListView(
+        children: [
+          AppBar(
+            automaticallyImplyLeading: false,
+            title: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                  hintText: "Search",
+                  suffixIcon: IconButton(
+                      icon: const Icon(Icons.clear, color: Colors.black),
+                      onPressed: () {
+                        _searchController.clear();
+                      })),
+            ),
+          ),
+          for (var i = 0; i < 10; i++)
+            Column(
+              children: [
+                Listing(),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            )
         ],
-        onTap: (int index){
-          setState(() {
-            _currentIndex=index;
-          });
-          switch(index){
-            case 0:{
-              break;
-            }
-            case 1:{Navigator.push(context,MaterialPageRoute(builder:(BuildContext context){
-                return  Leaderboard();})
-            );
-              break;
-            }
-            case 2:{
-              Navigator.push(context,MaterialPageRoute(builder:(BuildContext context){
-                return const settings();
+        //Rest of the body below this
+      ),
+      Positioned(
+          top: 490,
+          left: 290,
+          child: CircleAvatar(
+              radius: 28,
+              backgroundColor: theme.colorScheme.primary,
+              child: Center(
+                  child: IconButton(
+                iconSize: 40,
+                icon: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                    return const addAListing();
+                  }));
+                }, //onPressed
+              )))),
+    ]);
+  }
+}
 
-              })
+class Listing extends StatelessWidget {
+  void listingAdded() {
+    print("Listing Added");
+  }
 
-
-              );
-              break;
-            }
-            
-          }
-        }
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      decoration: BoxDecoration(
+          color: theme.colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(20)),
+      child: Row(
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Title",
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: Theme.of(context).colorScheme.onBackground),
+                overflow: TextOverflow.clip,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                width: 360,
+                child: Text(
+                  "This is a very long line. Please bear with it. Please I beg you to bear it",
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground),
+                  softWrap: true,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text("Current Bid",
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground)),
+              SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                onPressed: () {
+                  print("Listing");
+                },
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                  theme.colorScheme.background,
+                )),
+                child: Text(
+                  "Place Bid",
+                  style: TextStyle(
+                      fontSize: 15, color: theme.colorScheme.secondary),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
-  
 }

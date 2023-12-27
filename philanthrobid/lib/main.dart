@@ -4,35 +4,34 @@ import 'package:philanthrobid/MyLoginPage.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-Future<void> main()async{
+Future<void> main() async {
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
- 
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
   @override
-
-  _MyAppState createState(){
+  _MyAppState createState() {
     return _MyAppState();
-    }
+  }
 }
 
-class _MyAppState extends State<MyApp>{
+class _MyAppState extends State<MyApp> {
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return MaterialApp(
-      title:"Philanthrobid",
-      home:MyLoginPage(),
-      theme:ThemeData(
-        primarySwatch:Colors.lightBlue,
-
-      ),
+      title: "Philanthrobid",
+      home: MyLoginPage(),
+      theme: ThemeData(
+          useMaterial3: true,
+          colorScheme:
+              ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 5, 241, 84))),
     );
   }
 }
