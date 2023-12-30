@@ -38,7 +38,7 @@ class _addAListing extends State<addAListing> {
                 controller: _titleOfListing,
               )), //title Text Field
           Container(
-              margin: EdgeInsetsDirectional.only(start: 10, end: 10), //margin
+              margin: const EdgeInsetsDirectional.only(start: 10, end: 10), //margin
               child: TextField(
                   controller: _descriptionOfListing,
                   maxLines: 10,
@@ -47,7 +47,7 @@ class _addAListing extends State<addAListing> {
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20))))),
           Container(
-              margin: EdgeInsetsDirectional.only(top: 10, start: 90, end: 90),
+              margin: const EdgeInsetsDirectional.only(top: 10, start: 90, end: 90),
               child: TextField(
                 keyboardType: TextInputType.number,
                 inputFormatters: <TextInputFormatter>[
@@ -55,13 +55,13 @@ class _addAListing extends State<addAListing> {
                 ],
                 controller: _startingBidOfListing,
                 decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.currency_rupee),
+                    prefixIcon: const Icon(Icons.currency_rupee),
                     hintText: "Starting Bid",
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20))),
               )),
           Container(
-              margin: EdgeInsetsDirectional.only(
+              margin: const EdgeInsetsDirectional.only(
                   top: 10, start: 90, end: 110, bottom: 25),
               child: TextField(
                 keyboardType: TextInputType.number,
@@ -70,7 +70,7 @@ class _addAListing extends State<addAListing> {
                 ],
                 controller: _minmIncrementOfListing,
                 decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.currency_rupee),
+                    prefixIcon: const Icon(Icons.currency_rupee),
                     hintText: "Min. Increment",
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20))),
@@ -80,7 +80,7 @@ class _addAListing extends State<addAListing> {
                 backgroundColor: MaterialStateProperty.all<Color>(
               theme.colorScheme.primary,
             )),
-            child: Text(
+            child: const Text(
               "Add Listing",
               style: TextStyle(fontSize: 20, color: Colors.white),
             ),

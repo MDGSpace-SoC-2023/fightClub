@@ -27,11 +27,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Philanthrobid",
-      home: MyLoginPage(),
+      home: const MyLoginPage(),
       theme: ThemeData(
           useMaterial3: true,
           colorScheme:
-              ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 5, 241, 84))),
+              ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 5, 241, 84))),
     );
   }
 }

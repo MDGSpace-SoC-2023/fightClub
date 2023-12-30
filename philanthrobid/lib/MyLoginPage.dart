@@ -62,7 +62,7 @@ class _MyLoginState extends State<MyLoginPage> {
               decoration: InputDecoration(
                 hintText: "Password",
                 helperText: errorMessage,
-                helperStyle: TextStyle(
+                helperStyle: const TextStyle(
                   color: Colors.red,
                 ),
                 enabledBorder: OutlineInputBorder(

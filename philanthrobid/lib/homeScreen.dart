@@ -87,6 +87,8 @@ class _homeScreen extends State<homeScreen> {
 class HomePage extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
 
+  HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -108,7 +110,7 @@ class HomePage extends StatelessWidget {
           ),
           for (var i = 0; i < 10; i++)
             Column(
-              children: [
+              children: const [
                 Listing(),
                 SizedBox(
                   height: 10,
@@ -143,6 +145,8 @@ class HomePage extends StatelessWidget {
 }
 
 class Listing extends StatelessWidget {
+  const Listing({super.key});
+
   void listingAdded() {
     print("Listing Added");
   }

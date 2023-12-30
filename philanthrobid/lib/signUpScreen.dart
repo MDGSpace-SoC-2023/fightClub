@@ -37,7 +37,7 @@ class _signUpScreen extends State<signUpScreen> {
             child: Center(
               child: Column(
                 children: [
-                  SizedBox(height: 80),
+                  const SizedBox(height: 80),
                   Text(
                     "Philanthrobid",
                     style: theme.textTheme.displaySmall!
@@ -106,7 +106,7 @@ class _signUpScreen extends State<signUpScreen> {
               controller: _repasswordController,
               decoration: InputDecoration(
                 helperText: errorPass,
-                helperStyle: TextStyle(
+                helperStyle: const TextStyle(
                   color: Colors.red,
                 ),
                 hintText: "Re-enter Password",
@@ -143,6 +143,8 @@ class _signUpScreen extends State<signUpScreen> {
                         .doc(userCredential.user?.uid)
                         .set({
                       "Username": userName,
+                      "ProfilePicture":
+                          "https://img.freepik.com/free-vector/illustration-businessman_53876-5856.jpg?w=740&t=st=1703611707~exp=1703612307~hmac=d5c08a37edb8913608611752171bd6796bcdf0e1ff8ea65fb13a5e0475c36135",
                       "Email id": email,
                     });
                   } catch (e) {
