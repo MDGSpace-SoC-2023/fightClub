@@ -5,6 +5,8 @@ import 'package:philanthrobid/MyLoginPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import "dart:io";
+import "dart:convert";
+import "package:http/http.dart" as http;
 
 
 
@@ -20,12 +22,15 @@ class settings extends StatefulWidget{
 }
    
 class _settingsState extends State<settings>{
-  XFile? _profileFile;
+
   final ImagePicker _picker =ImagePicker();
   String? userNameSettings;
   final TextEditingController newUserName = TextEditingController();
   final FirebaseStorage storage = FirebaseStorage.instance;
   String? profileURL;
+  String editTheUserName = "http://10.0.2.2:8000/philanthrobid/users";
+  //String? errorStatement;
+ // bool newNameOk=false;
   
   String? setProfileURL;
   Future<String> downloadThePic()async{
@@ -52,11 +57,14 @@ class _settingsState extends State<settings>{
   if (pickedFile != null){
    profileURL=await uploadProfilePic(FirebaseAuth.instance.currentUser!, pickedFile);
   setState((){
-    _profileFile= pickedFile;
     setProfileURL=profileURL;
 
-  });}}
-  catch(e){print ("Error picking and/or Uploading image: $e ");}
+  });
+  }
+  }
+  catch(e){
+    print ("Error picking and/or Uploading image: $e ");
+    }
 
   }
   Future<String> uploadProfilePic(User user,XFile profilePicture)async{
@@ -105,7 +113,8 @@ class _settingsState extends State<settings>{
           Positioned(top:80,left:80,child:CircleAvatar(backgroundColor:Color.fromARGB(255, 246, 179, 202),
           child:IconButton(icon:Icon(Icons.add_a_photo,color:Colors.white,),
           onPressed:(){
-            showModalBottomSheet(context: context, 
+            showModalBottomSheet(context: context,
+            
             builder:(builder){
               return galleryOrCamera();
             } );
@@ -124,22 +133,94 @@ class _settingsState extends State<settings>{
             borderRadius:BorderRadius.circular(10)),
               child: Text(nameOfTheUser,style:TextStyle(fontSize:18))),
             IconButton(
-             onPressed:(){showDialog(context: context, builder: (BuildContext context){
+             onPressed:(){
+              
+              showDialog(context: context, builder: (BuildContext context){
               return AlertDialog(title:const Text("Change Username?",
               style:TextStyle(fontWeight: FontWeight.bold),),
               content:Container(height:160,
-                child: Column(children: [Text("Enter the new username below",style:TextStyle(fontSize:20),),
+                child: Column(children: [const Text ("Enter the new username below",style:TextStyle(fontSize:20),),
                 TextField(controller:newUserName,
-                decoration:const InputDecoration(hintText:"New Username",)),
+                decoration:InputDecoration(hintText:"New Username")),
                 TextButton(onPressed:()async{
-                  String? NewUserName=newUserName.text.trim();
+                  String NewUserName=newUserName.text.trim();
                   if (NewUserName != ""){
-                  await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).update({
-                    "Username":NewUserName,
-                    });
-                    Navigator.pop(context);}
+                  //await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).update({
+                    //"Username":NewUserName,
+                   // });
+                    //Update for drf below
+                    void updatingNameinBackend()async{
+                    var sendingData={
+                      "new_username":NewUserName,
+                      "old_username":nameOfTheUser
+                    };
+                    try{
+                      var response= await http.patch(Uri.parse(editTheUserName),  
+                      headers:{
+                        "Content-type":"application/json"
+                      },
+                      body:jsonEncode(sendingData));
+                      if (response.statusCode==200){
+                        print("Patched Successfully");
+                        //setState((){
+                        //newNameOk=true;});
+                        await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).update({
+                        "Username":NewUserName,
+                       });
+                       Navigator.pop(context);
+
+                      }
+                      else{
+                        print("An error happened in response for changing the name ${response.statusCode}");
+                        print ("Response body ${response.body}");
+                        if (response.statusCode==500){
+                          FocusScope.of(context).unfocus();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content:Container(
+                              padding: const EdgeInsets.all(16),
+                              height:90,
+                              decoration: BoxDecoration(color: Colors.red,
+                              borderRadius: BorderRadius.circular(20)),
+                              child: const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [Text('Sorry!',style: TextStyle(fontSize:18),),
+                                  Text("That name is already taken."),
+                                ],
+                              )),
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.transparent,//removes border thingy due to snackbars edges
+                            elevation:0,//removes weird shadow
+                            duration:const Duration(seconds:3),
+                            ),
+                            
+
+                          );
+                          //setState(() {
+                          //  errorStatement="Sorry that username is taken";
+
+                          //});
+                        }
+                        
+                      }
+                      
+
+                    }catch(e){
+                      print ("Error in changing username $e");
+
+                    }}
+                    updatingNameinBackend();
+                    //if(newNameOk){
+                    //await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).update({
+                    //"Username":NewUserName,
+                    //});
+                    //Navigator.pop(context);}
+
+                    }
+                    //I am not sure since want working before but put nothig in field error here
+                    
             
-                }, child: Text("SAVE"))
+                }, child:const Text("SAVE")),
+                
                 ]
                 ),
                
@@ -172,11 +253,16 @@ class _settingsState extends State<settings>{
           ),//EMAIL
         
           Center(child:TextButton(child:Text("Logout",style:TextStyle(fontSize:20,),),
-          onPressed:(){Navigator.push(
+          onPressed:(){Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (BuildContext context){
-              return MyLoginPage();
-            },)
+              return const MyLoginPage();
+              
+            },
+            
+            ),
+            (route)=>false
+            
           );
         
           },
@@ -228,4 +314,6 @@ Widget galleryOrCamera(){
 
   );
 }
+
 }
+
