@@ -68,11 +68,12 @@ class _MyLoginState extends State<MyLoginPage>{
               email:email,
               password: password,
             );
-            Navigator.push(context,
+            Navigator.pushAndRemoveUntil(context,
           MaterialPageRoute(builder: (BuildContext context){
             return const homeScreen();
           },
-          ),);
+          ),
+          (route)=>false); //tells remove everything until nothing left
           }catch(e){
             print("Wrong Credentials");
             setState((){errorMessage="Invalid Credentials";});

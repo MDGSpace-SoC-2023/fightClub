@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:philanthrobid/MyLoginPage.dart';
+import 'package:philanthrobid/biddingPage.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+
 Future<void> main()async{
+  
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
