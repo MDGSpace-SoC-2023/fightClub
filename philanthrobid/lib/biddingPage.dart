@@ -116,10 +116,8 @@ class _biddingPage extends State<biddingPage>{
                 body:jsonEncode(sendingData));
                 if(response.statusCode==200){
                   print("Patched Succesfully");
-                  Navigator.pushAndRemoveUntil(context,
-                  MaterialPageRoute(builder: (BuildContext context){
-                  return const homeScreen();
-                  },),
+                  Navigator.pushNamedAndRemoveUntil(context,
+                  "/homePage",
                   (route)=>false);
                   
                 }
@@ -182,6 +180,9 @@ class _biddingPage extends State<biddingPage>{
                 body:jsonEncode(sendingData));
                 if(response.statusCode==200){
                   print("Patched Succesfully");
+                  Navigator.pushNamedAndRemoveUntil(context,
+                  "/homePage",
+                  (route)=>false);
                 }
                 else{
                   print(response.statusCode);
@@ -192,11 +193,6 @@ class _biddingPage extends State<biddingPage>{
               print (e);
             }}
             makingBid();
-            Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (BuildContext context){
-              return const homeScreen();
-            },),
-            (route)=>false);
 
           }
           else{

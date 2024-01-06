@@ -38,9 +38,7 @@ class _settingsState extends State<settings>{
 
       Reference ref= storage.ref().child("userProfilePictures/${FirebaseAuth.instance.currentUser?.uid}/profilePicture.jpg");
       String mayBeFinalURL= await ref.getDownloadURL();
-      setState(){
-        setProfileURL=mayBeFinalURL;
-      }
+      
       
       return mayBeFinalURL;
     }catch(e){
@@ -102,7 +100,7 @@ class _settingsState extends State<settings>{
             backgroundColor:const Color.fromARGB(255, 246, 179, 202),
             centerTitle:true,
           ),
-          body:Column(children:[Text("Personal Details",style:TextStyle(fontSize: 20,)),
+          body:Column(children:[const Text("Personal Details",style:TextStyle(fontSize: 20,)),
 
 
           
@@ -123,15 +121,15 @@ class _settingsState extends State<settings>{
           ],
           ),
           Container(
-            margin:EdgeInsetsDirectional.only(top:10),
+            margin:const EdgeInsetsDirectional.only(top:10),
             child: Row(mainAxisAlignment:MainAxisAlignment.center,
             
             children:[Text("Username:",style:TextStyle(fontSize:18),),
             Container(margin:EdgeInsets.all(10),
-            padding:EdgeInsets.all(10),
+            padding:const EdgeInsets.all(10),
             decoration: BoxDecoration(border:Border.all(),
             borderRadius:BorderRadius.circular(10)),
-              child: Text(nameOfTheUser,style:TextStyle(fontSize:18))),
+              child: Text(nameOfTheUser,style:const TextStyle(fontSize:18))),
             IconButton(
              onPressed:(){
               
@@ -141,7 +139,7 @@ class _settingsState extends State<settings>{
               content:Container(height:160,
                 child: Column(children: [const Text ("Enter the new username below",style:TextStyle(fontSize:20),),
                 TextField(controller:newUserName,
-                decoration:InputDecoration(hintText:"New Username")),
+                decoration:const InputDecoration(hintText:"New Username")),
                 TextButton(onPressed:()async{
                   String NewUserName=newUserName.text.trim();
                   if (NewUserName != ""){
@@ -251,20 +249,16 @@ class _settingsState extends State<settings>{
             ),
           ]
           ),//EMAIL
-        
+          
           Center(child:TextButton(child:Text("Logout",style:TextStyle(fontSize:20,),),
-          onPressed:(){Navigator.pushAndRemoveUntil(
+          onPressed:()async{
+            await FirebaseAuth.instance.signOut();
+            Navigator.pushNamedAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (BuildContext context){
-              return const MyLoginPage();
-              
-            },
-            
-            ),
+            "/loginPage",
             (route)=>false
             
           );
-        
           },
           style:ButtonStyle(backgroundColor:MaterialStateProperty.all<Color>(const Color.fromARGB(255, 246, 179, 202),),foregroundColor:MaterialStateProperty.all<Color>(Colors.white),)
           

@@ -92,14 +92,10 @@ class _addAListing extends State<addAListing>{
         }
         sendListingtoBack();
         //Navigator.pop(context);
-        Navigator.pushAndRemoveUntil(    //pop not used so that homescreen gets update and listing added can be observed
+        Navigator.pushNamedAndRemoveUntil(    //pop not used so that homescreen gets update and listing added can be observed
           context,
-            MaterialPageRoute(builder: (BuildContext context){
-              return const homeScreen();
-            },),
+            "/homePage",
             (route)=>false
-
-
         );
       },),
       

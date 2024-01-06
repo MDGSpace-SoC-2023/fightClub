@@ -115,10 +115,8 @@ class _signUpScreen extends State<signUpScreen>{
               //  dataSentToback=true;
               //});
               UserCredential userCredential= await _auth.createUserWithEmailAndPassword(email: email, password: password);
-            Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (BuildContext context){
-              return const homeScreen();
-            },),
+            Navigator.pushNamedAndRemoveUntil(context,
+            "/homePage",
             (route)=>false);
             await _firestore.collection("users").doc(userCredential.user?.uid).set({
               "Username":userName,
@@ -144,8 +142,18 @@ class _signUpScreen extends State<signUpScreen>{
               else if ((response.body=='{"email":["user with this email already exists."]}')||(response.body=='{"username":["user with this username already exists."],"email":["user with this email already exists."]}')){
                 setState((){
                   errorPass="That email-id has already been registered.";
-                  });
+                  });}
+              else if (response.body.contains('{"email":["Enter a valid email address."]}')){
+                setState(() {
+                  errorPass="Please enter a valid e-mail address";
+                });
               }
+              else{
+                setState(() {
+                  errorPass="Please enter valid credentials for Sign-up";
+                });
+              }
+              
             }
             }catch(e){
               print("Error happended $e");
@@ -177,11 +185,7 @@ class _signUpScreen extends State<signUpScreen>{
           catch(e){
             print("REG ERROR");
             print("This is e:$e");
-            if(e=="[firebase_auth/invalid-email] The email address is badly formatted."){
-              setState(() {
-                errorPass="That is an invalid email";
-              });
-            }
+            
           }
           }
           else{
@@ -197,11 +201,8 @@ class _signUpScreen extends State<signUpScreen>{
         } ,style:ButtonStyle(backgroundColor:MaterialStateProperty.all<Color>(const Color.fromARGB(255, 246, 179, 202),)), child:const Text("REGISTER",style:TextStyle(color:Colors.white,fontSize:20),)),
         
         TextButton(onPressed:(){
-          Navigator.push(context,
-          MaterialPageRoute(builder: (BuildContext context){
-            return const MyLoginPage();
-          },
-          ),);
+          Navigator.pushNamed(context,
+          "/loginPage");
         },child:const Text("Have an account?Login"))
       ],
     ),
