@@ -68,11 +68,8 @@ class _MyLoginState extends State<MyLoginPage>{
               email:email,
               password: password,
             );
-            Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (BuildContext context){
-            return const homeScreen();
-          },
-          ),
+            Navigator.pushNamedAndRemoveUntil(context,
+           "/homePage",
           (route)=>false); //tells remove everything until nothing left
           }catch(e){
             print("Wrong Credentials");
@@ -80,11 +77,8 @@ class _MyLoginState extends State<MyLoginPage>{
           }
         } ,style:ButtonStyle(backgroundColor:MaterialStateProperty.all<Color>(const Color.fromARGB(255, 246, 179, 202),)), child:const Text("LOGIN",style:TextStyle(color:Colors.white,fontSize:20),)),
         TextButton(onPressed:(){
-          Navigator.push(context,
-          MaterialPageRoute(builder: (BuildContext context){
-            return const signUpScreen();
-          },
-          ),);
+          Navigator.pushNamed(context,
+          "/signUpPage",);
         },child:const Text("Don't have an account?Register"))
         
       ],

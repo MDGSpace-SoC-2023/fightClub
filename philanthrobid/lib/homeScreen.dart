@@ -31,14 +31,14 @@ class _homeScreen extends State<homeScreen> {
   }
   Future<void> getListingList()async{
     var response = await http.get(Uri.parse(getListingsURL));
-    print(response.statusCode);
-    print(response.body);
+    //print(response.statusCode);
+    //print(response.body);
     if (response.statusCode==200){
-      final List<dynamic> jsonList = json.decode(response.body);
+      final List<dynamic> jsonList = json.decode(response.body);//takes json list of json objects and decodes to normal list of json object
        setState(() {
-         listingList= jsonList.map((item)=>
+         listingList= jsonList.map((item)=>  //.map is used to transorm each element of a collection to a new value base on a specific funcn
          Listing.fromJson(item)).toList();
-       });
+       });//converts each item of the list from json to a member of the listing class and creates a list of them.  
 
     }else{
       throw Exception("Failed to load");
@@ -184,11 +184,8 @@ class _homeScreen extends State<homeScreen> {
       Positioned(top:580,left:328,child:CircleAvatar(radius:28,backgroundColor:Color.fromARGB(255, 246, 179, 202), child:Center(child:IconButton(iconSize:40,
       icon:const Icon(Icons.add,color:Colors.white,),
       onPressed:(){
-        Navigator.push(context,
-        MaterialPageRoute(builder: (BuildContext context){
-          return addAListing();
-        }
-        )
+        Navigator.pushNamed(context,
+        "/addListingPage"
         );
 
       },//onPressed
@@ -214,25 +211,17 @@ class _homeScreen extends State<homeScreen> {
             _currentIndex=index;
           });
           switch(index){
-            case 0:{Navigator.push(context,MaterialPageRoute(builder:(BuildContext context){
-                return const homeScreen();})
+            case 0:{Navigator.pushNamed(context,"/homePage"
             );
               break;
             }
-            case 1:{Navigator.push(context,MaterialPageRoute(builder:(BuildContext context){
-                return  Leaderboard();})
+            case 1:{Navigator.pushNamed(context,
+            "/leaderboardPage"
             );
               break;
             }
             case 2:{
-              
-              Navigator.push(context,MaterialPageRoute(builder:(BuildContext context){
-                return const settings();
-                
-
-              })
-
-
+              Navigator.pushNamed(context,"/settingsPage"
               );
               break;
             }

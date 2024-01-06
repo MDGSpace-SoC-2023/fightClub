@@ -4,7 +4,7 @@ from django.db import models
 
 class User(models.Model):   #No need for name
     username = models.CharField(max_length=256,unique=True)
-    email = models.CharField(max_length=256,unique=True)
+    email = models.EmailField(max_length=256,unique=True)
     #name = models.CharField(max_length=256)
 
     def __str__(self):
