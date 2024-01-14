@@ -6,8 +6,9 @@ import "package:philanthrobid/leaderboard.dart";
 import "dart:convert";
 import "package:http/http.dart" as http;
 import 'package:philanthrobid/listings.dart';
-
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import "package:firebase_auth/firebase_auth.dart";
+import "package:philanthrobid/winningPage.dart";
 class homeScreen extends StatefulWidget {
   const homeScreen({super.key});
 
@@ -20,16 +21,82 @@ class _homeScreen extends State<homeScreen> {
   final TextEditingController _searchController=TextEditingController();
   int _currentIndex=0;
   late List<Listing>? listingList=[];
+  List<Listing>? unpaidListingList=[];
  int? selectedListing;
  String searched="";
+ String name="";
+ String sendUnPaidApiURL = "http://10.0.2.2:8000/philanthrobid/UnpaidUsers";
+ String unPaidListingsURL="http://10.0.2.2:8000/philanthrobid/UnpaidUserListBackend";
  
 
   @override
   void initState(){
     super.initState();
+    
     getListingList();
+    //getUnPaidList();
+    searchUnpaidList();
+    
+    
+  }
+
+
+   
+  Future<void> getUnPaidList()async{
+    var response=await http.get(Uri.parse(unPaidListingsURL));
+    if (response.statusCode==200){
+    final List<dynamic> jsonList = json.decode(response.body);
+    
+    setState(() {
+      unpaidListingList=jsonList.map((item)=>  //.map is used to transorm each element of a collection to a new value base on a specific funcn
+      Listing.fromJson(item)).toList();  
+    });
+
+      
+       
+      }
+      else{
+        throw Exception("failed to load unpaidlisting");
+      }
+        
+  }
+  Future<void> searchUnpaidList()async{
+    await getUnPaidList();
+    await getName();
+    
+    
+    print("called");
+    print(unpaidListingList!.length);
+    print (name);
+    for(int i=0;i<unpaidListingList!.length;i++){
+      if(unpaidListingList![i].bidding_user==name){
+        print("yoooooo");
+        String titleSent =unpaidListingList![i].title;
+        print (titleSent);
+        
+        Navigator.pushAndRemoveUntil(context ,MaterialPageRoute(builder:(BuildContext context){
+                  return winningPage(sendingData:{
+                  "wonTitle":titleSent,
+                  
+                  "wonBid":unpaidListingList![i].bid,
+                  "wonId":unpaidListingList![i].list_id
+                  
+                  
+                  });
+            
+                }), (route) => false);
+                break;
+      }
+    }
+  }
+  Future<void> getName()async{
+    DocumentSnapshot named =await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).get();
+
+      name=named["Username"];
+
   }
   Future<void> getListingList()async{
+    await getName();
     var response = await http.get(Uri.parse(getListingsURL));
     //print(response.statusCode);
     //print(response.body);
@@ -38,8 +105,10 @@ class _homeScreen extends State<homeScreen> {
        setState(() {
          listingList= jsonList.map((item)=>  //.map is used to transorm each element of a collection to a new value base on a specific funcn
          Listing.fromJson(item)).toList();
-       });//converts each item of the list from json to a member of the listing class and creates a list of them.  
-
+       });
+       //DocumentSnapshot named =await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).get();
+       //name=named["Username"];//converts each item of the list from json to a member of the listing class and creates a list of them.  
+      
     }else{
       throw Exception("Failed to load");
     }
@@ -61,24 +130,7 @@ class _homeScreen extends State<homeScreen> {
         backgroundColor:const Color.fromARGB(255, 246, 179, 202),
       ),
       body:Stack(children:[
-      /*CustomScrollView(slivers: [SliverAppBar(expandedHeight: 40, floating:true,
-      automaticallyImplyLeading:false,
-      title:TextField(controller:_searchController,
-      decoration:InputDecoration(hintText:"Search",
-      suffixIcon:IconButton(icon:const Icon(Icons.clear,color:Colors.black),onPressed:(){
-        _searchController.clear();
-      })),
-      ),),
       
-      ],
-      //Rest of the body below this 
-      
-      
-      
-
-
-
-      ),*/
       
       Column(
         children: [
@@ -91,12 +143,13 @@ class _homeScreen extends State<homeScreen> {
           hintText:"Search",
           border:OutlineInputBorder( 
           ),
-          prefixIcon: const Icon(Icons.search)
+          prefixIcon: Icon(Icons.search)
         ),)
       ),
           Expanded(
-            child: listingList != null?ListView.builder(itemCount: listingList?.length,
+            child: listingList != null?ListView.builder(itemCount: (listingList?.length)??0-unpaidListingList!.length, 
             itemBuilder:(context,index){
+              
               String toBeDisplayed;
               if(listingList![index].bid!=0){
                 toBeDisplayed="Current Bid -\u{20B9}${listingList![index].bid}";
@@ -104,15 +157,50 @@ class _homeScreen extends State<homeScreen> {
               else{
                 toBeDisplayed="Starting Bid -\u{20B9}${listingList![index].strtbid}";
               }
+              DateTime createDate=DateTime.parse(listingList![index].created_at);
+              DateTime  endTime=createDate.add(const Duration(days:5));//can change to however much time want auction to last MUST CHANGE IN BACKEND SIMULTANEOUSLY
+              
+              Duration timeLeft=endTime.difference(DateTime.now());
+              Duration displayedTimeLeft;
+              String actualDisplay;
+              
+              if (timeLeft>Duration.zero){
+                displayedTimeLeft=timeLeft;
+              }
+              else{
+                displayedTimeLeft=Duration.zero;
+              }
+              if(displayedTimeLeft.inHours==0){
+                actualDisplay="${displayedTimeLeft.inMinutes.toString()} min(s) ${displayedTimeLeft.inSeconds-displayedTimeLeft.inMinutes*60} sec(s) left";
+              }
+              else{
+                actualDisplay="${displayedTimeLeft.inDays.toString()} day(s) ${displayedTimeLeft.inHours-displayedTimeLeft.inDays*24} hour(s) left";
+              }
+              if(displayedTimeLeft!=Duration.zero){
               return Card(child:ListTile(title:
-                  Text(listingList![index].title,
-                  //textAlign:TextAlign.center,
-                  style:const TextStyle(fontSize:25,color:Color.fromARGB(186, 0, 0, 0),
-                  fontWeight:FontWeight.w400,
-                  //decoration: TextDecoration.underline
+                  Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                    
+                    children: [
+                      Container(
+                        width:200,
+                        child: Text(listingList![index].title,
+                        maxLines:2,
+                        //textAlign:TextAlign.center,
+                        style:const TextStyle(fontSize:20,color:Color.fromARGB(186, 0, 0, 0),
+                        fontWeight:FontWeight.w400,
+                        //decoration: TextDecoration.underline
+                        ),
+                        
+                        
+                        
+                        ),
+                      ),
+                      Text(actualDisplay,
+                      style: const TextStyle(fontSize: 12),)
+                    ],
+
                   ),
                   
-                  ),
                   
                   
                
@@ -156,10 +244,19 @@ class _homeScreen extends State<homeScreen> {
                 }));
             
               },
+             
+
+              
               ),
               
+              
               );
-            },):const Center(child:CircularProgressIndicator()),
+              }else{
+                return Container();
+              }
+
+            }
+            ,):const Center(child:CircularProgressIndicator()),
           ),
         ],
       ),
@@ -181,7 +278,7 @@ class _homeScreen extends State<homeScreen> {
         //},
       //),
 
-      Positioned(top:580,left:328,child:CircleAvatar(radius:28,backgroundColor:Color.fromARGB(255, 246, 179, 202), child:Center(child:IconButton(iconSize:40,
+      Positioned(top:580,left:328,child:CircleAvatar(radius:28,backgroundColor:const Color.fromARGB(255, 246, 179, 202), child:Center(child:IconButton(iconSize:40,
       icon:const Icon(Icons.add,color:Colors.white,),
       onPressed:(){
         Navigator.pushNamed(context,

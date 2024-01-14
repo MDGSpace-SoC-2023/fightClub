@@ -8,15 +8,17 @@ import 'package:philanthrobid/homeScreen.dart';
 import 'package:philanthrobid/leaderboard.dart';
 import 'package:philanthrobid/settings.dart';
 import 'package:philanthrobid/signUpScreen.dart';
+import 'package:philanthrobid/winningPage.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import "package:firebase_auth/firebase_auth.dart";
-
+import "package:flutter_stripe/flutter_stripe.dart";
 
 Future<void> main()async{
   
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey=dotenv.env["stripePublishableKey"]??"123";
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -40,7 +42,7 @@ class _MyAppState extends State<MyApp>{
   Widget build(BuildContext context){
     return MaterialApp(
       title:"Philanthrobid",
-      home:const MainPage(),
+      home:MainPage(),
       theme:ThemeData(
         primarySwatch:Colors.lightBlue,
 
@@ -52,6 +54,7 @@ class _MyAppState extends State<MyApp>{
         "/homePage":(context)=>const homeScreen(),
         "/addListingPage":(context)=>const addAListing(),
         "/leaderboardPage":(context)=>Leaderboard(),
+        
       }
       
     );
@@ -60,7 +63,9 @@ class _MyAppState extends State<MyApp>{
 class MainPage extends StatelessWidget{
   const MainPage({super.key});
 @override
+  
   Widget build(BuildContext context){
+
     return Scaffold(
       body:StreamBuilder<User?>(stream:FirebaseAuth.instance.authStateChanges(),
       builder: (context,snapshot){
@@ -69,6 +74,7 @@ class MainPage extends StatelessWidget{
         }else{
           return const  MyLoginPage();
         }
+        
         
       },
       

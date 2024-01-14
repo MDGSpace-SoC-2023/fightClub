@@ -46,3 +46,24 @@ class Listing{
 
   };
 }
+
+class unpaidListing{
+  String unpaidName;
+  String title;
+  int amount;
+  int id_of_listing;
+  unpaidListing({
+    required this.unpaidName,
+    required this.title,
+    required this.amount,
+    required this.id_of_listing,
+
+  });
+  factory unpaidListing.fromJson(Map<String,dynamic> json){
+    return unpaidListing(unpaidName: json["unpaidName"],
+     title: json["title"],
+     amount: json["amount"],
+     id_of_listing:json["id_of_listing"]);
+  }
+
+}

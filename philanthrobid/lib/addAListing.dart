@@ -31,28 +31,28 @@ class _addAListing extends State<addAListing>{
       controller:_titleOfListing,
       )
       ),//title Text Field
-      Container(margin:EdgeInsetsDirectional.only(start:10,end:10),//margin
+      Container(margin:const EdgeInsetsDirectional.only(start:10,end:10),//margin
       child:TextField(controller:_descriptionOfListing,
       maxLines:10,decoration:InputDecoration(hintText:"Description of the Listing(max char:1024)",
       enabledBorder:OutlineInputBorder(borderRadius:BorderRadius.circular(20)))
       )
       ),
-      Container(margin:EdgeInsetsDirectional.only(top:10,start:90,end:90),
+      Container(margin:const EdgeInsetsDirectional.only(top:10,start:90,end:90),
       child:TextField(keyboardType:TextInputType.number,
       inputFormatters:<TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
       controller:_startingBidOfListing,
-      decoration:InputDecoration(prefixIcon:Icon(Icons.currency_rupee),hintText:"Starting Bid",
+      decoration:InputDecoration(prefixIcon:const Icon(Icons.currency_rupee),hintText:"Starting Bid",
       enabledBorder:OutlineInputBorder(borderRadius:BorderRadius.circular(20))),)
       ),
-      Container(margin:EdgeInsetsDirectional.only(top:10,start:90,end:110,bottom:25),
+      Container(margin:const EdgeInsetsDirectional.only(top:10,start:90,end:110,bottom:25),
       child:TextField(keyboardType:TextInputType.number,
       inputFormatters:<TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
       controller:_minmIncrementOfListing,
-      decoration:InputDecoration(prefixIcon:Icon(Icons.currency_rupee),hintText:"Min. Increment",
+      decoration:InputDecoration(prefixIcon:const Icon(Icons.currency_rupee),hintText:"Min. Increment",
       enabledBorder:OutlineInputBorder(borderRadius:BorderRadius.circular(20))),)
       ),
       TextButton(style:ButtonStyle(backgroundColor:MaterialStateProperty.all<Color>(const Color.fromARGB(255, 246, 179, 202),)),
-      child:Text("Add Listing",style:TextStyle(fontSize:20,color:Colors.white),),
+      child:const Text("Add Listing",style:TextStyle(fontSize:20,color:Colors.white),),
       onPressed:()async{
         String title =_titleOfListing.text.trim();
         String descrip = _descriptionOfListing.text.trim();

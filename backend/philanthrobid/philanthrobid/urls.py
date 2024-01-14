@@ -1,8 +1,11 @@
 from django.contrib import admin
 from django.urls import path, include
-from philanthrobid_app import urls
+from philanthrobid_app import urls,views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("philanthrobid/", include(urls))
+    path("philanthrobid/", include(urls)),
+    
+
+    
 ]
