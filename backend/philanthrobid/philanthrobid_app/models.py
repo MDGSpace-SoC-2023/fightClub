@@ -34,7 +34,6 @@ class Bidder(models.Model):
     money_spent = models.IntegerField()
     username=models.CharField(max_length=100,blank=True,null=True)
     
-
     def __str__(self):
         return self.user.username
     

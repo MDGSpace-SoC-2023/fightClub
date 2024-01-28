@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:google_fonts/google_fonts.dart";
 import "dart:convert";
 import "package:http/http.dart" as http;
 import "package:firebase_auth/firebase_auth.dart";
@@ -21,46 +22,53 @@ class _addAListing extends State<addAListing>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      appBar:AppBar(backgroundColor: const Color.fromARGB(255, 246, 179, 202),
-      title:const Text("Add your Listing",style:TextStyle(color:Colors.white),),
-      centerTitle:true,
+      appBar:AppBar(backgroundColor: Theme.of(context).colorScheme.primary,
+      title:Text("Add Listing",style:GoogleFonts.ubuntu(textStyle: TextStyle(color:Theme.of(context).colorScheme.outline, fontWeight: FontWeight.w700)),),
       ),
       body:SingleChildScrollView(child: Column(children:[Container(margin:const EdgeInsets.all(10),
-      child:TextField(decoration:InputDecoration(hintText:"Title of the Listing",
-      enabledBorder:OutlineInputBorder(borderRadius:BorderRadius.circular(20),),),
-      controller:_titleOfListing,
-      )
-      ),//title Text Field
+      child:TextField(decoration:InputDecoration(hintText:"Title",),
+      controller:_titleOfListing,),
+       padding:const EdgeInsets.all(10),
+      decoration: BoxDecoration(border:Border.all(color: Theme.of(context).colorScheme.tertiary,),
+                borderRadius:BorderRadius.circular(20))
+      ),
       Container(margin:const EdgeInsetsDirectional.only(start:10,end:10),//margin
       child:TextField(controller:_descriptionOfListing,
-      maxLines:10,decoration:InputDecoration(hintText:"Description of the Listing(max char:1024)",
-      enabledBorder:OutlineInputBorder(borderRadius:BorderRadius.circular(20)))
-      )
+      maxLines:10,decoration:InputDecoration(hintText:"Description (max char:1024)",),),
+      padding:const EdgeInsets.all(10),
+      decoration: BoxDecoration(border:Border.all(color: Theme.of(context).colorScheme.tertiary,),
+                borderRadius:BorderRadius.circular(20))
+      
       ),
       Container(margin:const EdgeInsetsDirectional.only(top:10,start:90,end:90),
       child:TextField(keyboardType:TextInputType.number,
       inputFormatters:<TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
       controller:_startingBidOfListing,
-      decoration:InputDecoration(prefixIcon:const Icon(Icons.currency_rupee),hintText:"Starting Bid",
-      enabledBorder:OutlineInputBorder(borderRadius:BorderRadius.circular(20))),)
+      decoration:InputDecoration(prefixIcon:const Icon(Icons.currency_rupee),hintText:"Base Price",)),
+      padding:const EdgeInsets.all(10),
+      decoration: BoxDecoration(border:Border.all(color: Theme.of(context).colorScheme.tertiary,),
+                borderRadius:BorderRadius.circular(20))
       ),
-      Container(margin:const EdgeInsetsDirectional.only(top:10,start:90,end:110,bottom:25),
+      Container(margin:const EdgeInsetsDirectional.only(top:10,start:90,end:90,bottom:25),
       child:TextField(keyboardType:TextInputType.number,
       inputFormatters:<TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
       controller:_minmIncrementOfListing,
-      decoration:InputDecoration(prefixIcon:const Icon(Icons.currency_rupee),hintText:"Min. Increment",
-      enabledBorder:OutlineInputBorder(borderRadius:BorderRadius.circular(20))),)
+      decoration:InputDecoration(prefixIcon:const Icon(Icons.currency_rupee),hintText:"Min. Increment",)),
+      padding:const EdgeInsets.all(10),
+      decoration: BoxDecoration(border:Border.all(color: Theme.of(context).colorScheme.tertiary,),
+                borderRadius:BorderRadius.circular(20))
       ),
-      TextButton(style:ButtonStyle(backgroundColor:MaterialStateProperty.all<Color>(const Color.fromARGB(255, 246, 179, 202),)),
-      child:const Text("Add Listing",style:TextStyle(fontSize:20,color:Colors.white),),
+      TextButton(style:ButtonStyle(backgroundColor:MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiary)),
+      child:Text("Add",style:TextStyle(fontSize:20,color:Theme.of(context).colorScheme.outline),),
+      //onHover: (flag){ButtonStyle(backgroundColor:MaterialStateProperty.all<Color>(Theme.of(context).primaryColorLight));},
       onPressed:()async{
         String title =_titleOfListing.text.trim();
         String descrip = _descriptionOfListing.text.trim();
         int startingBid = int.parse(_startingBidOfListing.text);
         int minIncrement = int.parse(_minmIncrementOfListing.text);
-        final FirebaseFirestore _firestore = FirebaseFirestore.instance; 
+        final FirebaseFirestore firestore = FirebaseFirestore.instance; 
         String? userId = FirebaseAuth.instance.currentUser?.uid;
-        DocumentSnapshot named=await _firestore.collection("users").doc(userId).get();
+        DocumentSnapshot named=await firestore.collection("users").doc(userId).get();
         String nameOfTheUser = named["Username"];
 
         void sendListingtoBack()async{

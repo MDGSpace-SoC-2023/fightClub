@@ -13,6 +13,8 @@ import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter_stripe/flutter_stripe.dart";
+import "package:philanthrobid/themes.dart";
+
 
 Future<void> main()async{
   
@@ -42,18 +44,18 @@ class _MyAppState extends State<MyApp>{
   Widget build(BuildContext context){
     return MaterialApp(
       title:"Philanthrobid",
-      home:MainPage(),
-      theme:ThemeData(
-        primarySwatch:Colors.lightBlue,
-
-      ),
+      home:const MainPage(),
+      themeMode: ThemeMode.system,
+      theme: ThemeClass.lightTheme,
+      darkTheme: ThemeClass.darkTheme,
+      
       routes:{
         "/loginPage":(context)=> const MyLoginPage(),
         "/signUpPage":(context)=> const signUpScreen(),
         "/settingsPage":(context)=> const settings(),
         "/homePage":(context)=>const homeScreen(),
         "/addListingPage":(context)=>const addAListing(),
-        "/leaderboardPage":(context)=>Leaderboard(),
+        "/leaderboardPage":(context)=>const Leaderboard(),
         
       }
       

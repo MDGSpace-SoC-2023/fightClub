@@ -68,7 +68,7 @@ class _winningPage extends State<winningPage>{
       
     }
     catch(e){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text("Sorry an Error occoured")));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text("Sorry an Error occoured")));
       rethrow;
     }
   }
