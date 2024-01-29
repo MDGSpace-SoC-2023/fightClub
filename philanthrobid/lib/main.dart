@@ -1,37 +1,87 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:philanthrobid/MyLoginPage.dart';
+import 'package:philanthrobid/addAListing.dart';
+import 'package:philanthrobid/biddingPage.dart';
+import 'package:philanthrobid/homeScreen.dart';
+import 'package:philanthrobid/leaderboard.dart';
+import 'package:philanthrobid/settings.dart';
+import 'package:philanthrobid/signUpScreen.dart';
+import 'package:philanthrobid/winningPage.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import "package:firebase_auth/firebase_auth.dart";
+import "package:flutter_stripe/flutter_stripe.dart";
+import "package:philanthrobid/themes.dart";
 
-Future<void> main() async {
+
+Future<void> main()async{
+  
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey=dotenv.env["stripePublishableKey"]??"123";
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+ 
   runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
   @override
-  _MyAppState createState() {
+
+  _MyAppState createState(){
     return _MyAppState();
-  }
+    }
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp>{
+
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return MaterialApp(
-      title: "Philanthrobid",
-      home: const MyLoginPage(),
-      theme: ThemeData(
-          useMaterial3: true,
-          colorScheme:
-              ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 5, 241, 84))),
+      title:"Philanthrobid",
+      home:const MainPage(),
+      themeMode: ThemeMode.system,
+      theme: ThemeClass.lightTheme,
+      darkTheme: ThemeClass.darkTheme,
+      
+      routes:{
+        "/loginPage":(context)=> const MyLoginPage(),
+        "/signUpPage":(context)=> const signUpScreen(),
+        "/settingsPage":(context)=> const settings(),
+        "/homePage":(context)=>const homeScreen(),
+        "/addListingPage":(context)=>const addAListing(),
+        "/leaderboardPage":(context)=>const Leaderboard(),
+        
+      }
+      
+    );
+  }
+}
+class MainPage extends StatelessWidget{
+  const MainPage({super.key});
+@override
+  
+  Widget build(BuildContext context){
+
+    return Scaffold(
+      body:StreamBuilder<User?>(stream:FirebaseAuth.instance.authStateChanges(),
+      builder: (context,snapshot){
+        if(snapshot.hasData){
+          return const homeScreen();
+        }else{
+          return const  MyLoginPage();
+        }
+        
+        
+      },
+      
+      )
+    
     );
   }
 }
