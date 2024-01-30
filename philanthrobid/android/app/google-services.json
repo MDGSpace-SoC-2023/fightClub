@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "631603332664",
+    "project_id": "philanthrobid-f54c1",
+    "storage_bucket": "philanthrobid-f54c1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631603332664:android:1d9dc9035ed636d31c88cd",
+        "android_client_info": {
+          "package_name": "com.example.philanthrobid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIrjC7bZ28zMYOloQ8gcHVn9Z9_SdbTUk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
