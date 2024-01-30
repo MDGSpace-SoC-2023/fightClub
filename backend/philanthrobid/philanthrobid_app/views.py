@@ -258,6 +258,11 @@ def changeStatus(list_id_sent,email_sent,money_sent):
         )
     except Bidder.DoesNotExist:
         Bidder.objects.create(user=user,money_spent=money_sent,username=username)
+        Conversation.objects.create(
+            Listingtitle=list.title,
+            winner=user,
+            seller=list.user
+        )
 
 class searchListing(APIView,ListingPagination):
     def get(self,request):

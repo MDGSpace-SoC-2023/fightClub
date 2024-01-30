@@ -63,22 +63,23 @@ class _homeScreen extends State<homeScreen>{
         )),
       ]),
       bottomNavigationBar: BottomNavigationBar(
+        unselectedItemColor: Colors.grey,
           currentIndex: _currentIndex,
           fixedColor: Theme.of(context).colorScheme.primary,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home,color:Colors.grey,),
+              icon: Icon(Icons.home,),
               label: "Home",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.leaderboard,color:Colors.grey),
+              icon: Icon(Icons.leaderboard,),
               label: "Leaderboard",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.message,color:Colors.grey),
+              icon: Icon(Icons.message,),
               label: "Chat",
             ),
-            BottomNavigationBarItem(icon: Icon(Icons.settings,color:Colors.grey),
+            BottomNavigationBarItem(icon: Icon(Icons.settings),
             label:"Settings")
           ],
           onTap: (int index) {
