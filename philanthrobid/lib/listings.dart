@@ -8,6 +8,14 @@ class Listing{
   int mininc;
   String created_at;
   String? bidding_user;
+  bool is_active;
+  int E_Sports;
+  int Dance;
+  int Sports;
+  int Spiritual;
+  int Music;
+  int Education;
+  String endDate;
 
   Listing({
   required this.list_id,
@@ -18,7 +26,16 @@ class Listing{
   required this.strtbid,
   required this.mininc,
   required this.created_at,
-  this.bidding_user});
+  this.bidding_user,
+  required this.is_active,
+  required this.E_Sports,
+  required this.Dance,
+  required this.Sports,
+  required this.Spiritual,
+  required this.Music,
+  required this.Education,
+  required this.endDate
+  });
   factory Listing.fromJson(Map<String,dynamic> json){
     return Listing(
       list_id: json["list_id"],
@@ -30,6 +47,14 @@ class Listing{
       mininc: json["mininc"],
       created_at:json["created_at"] ,
       bidding_user: json["bidding_user"],
+      is_active:json["is_active"],
+      E_Sports:json["E_Sports"],
+      Dance:json["Dance"],
+      Sports:json["Sports"],
+      Spiritual:json["Spiritual"],
+      Music:json["Music"],
+      Education:json["Education"],
+      endDate: json["endDate"]
 
     );
   }
@@ -66,4 +91,74 @@ class unpaidListing{
      id_of_listing:json["id_of_listing"]);
   }
 
+}
+
+class Conversation{
+    int group_id;
+    String winner;
+    String seller;
+    String created_at;
+    String Listingtitle;
+    Conversation({
+      required this.created_at,
+      required this.group_id,
+      required this.seller,
+      required this.winner,
+      required this.Listingtitle
+    });
+  factory Conversation.fromJson(Map<String,dynamic> json){
+    return Conversation(
+     group_id: json["group_id"],
+     created_at: json["created_at"],
+     winner: json["winner"],
+     seller:json["seller"],
+     Listingtitle:json["Listingtitle"]
+     );
+  }
+}
+
+class message{
+  int? message_id;
+  int? group;
+  String sender;
+  String? sent_at;
+  String message_data;
+  message({
+    this.message_id,
+    this.group,
+    required this.sender,
+    this.sent_at,
+    required this.message_data
+  });
+  factory message.fromJson(Map<String,dynamic>json){
+    return message(//message_id: json["message_id"],
+     //group: json["group"],
+     sender: json["sender"],
+     //sent_at:json["sent_at"],
+     message_data:json["message_data"]
+     );
+
+  }
+
+}
+class Bidder{
+  int user;
+  int money_spent;
+  String name;
+
+  Bidder({
+    required this.user,
+    required this.money_spent,
+    required this.name
+  });
+  factory Bidder.fromJson(Map<String,dynamic> json){
+    return Bidder(
+      user: json["user"],
+      money_spent: json["money_spent"],   //.fromJson is part of name and a convention takes a json Map and return a normal Listing json[] basically means accesing the elment having that key of a jsonMap
+      name: json["username"],
+      
+
+    );
+  }
+  
 }

@@ -34,6 +34,8 @@ ALLOWED_HOSTS = ["localhost","127.0.0.1","10.0.2.2"]
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -55,6 +58,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "philanthrobid.urls"
+
+CHANNEL_LAYERS={
+    "default":{
+        "BACKEND":"channels.layers.InMemoryChannelLayer",
+    },
+}
 
 TEMPLATES = [
     {
@@ -73,7 +82,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "philanthrobid.wsgi.application"
-
+ASGI_APPLICATION="philanthrobid.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

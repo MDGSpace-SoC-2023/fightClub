@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import 'package:flutter_stripe/flutter_stripe.dart';
 import "dart:convert";
 import "package:http/http.dart"as http;
+import 'package:google_fonts/google_fonts.dart';
 class winningPage extends StatefulWidget{
   Map<String,Object?> sendingData={};
   winningPage({super.key, required this.sendingData});
@@ -34,6 +35,7 @@ class _winningPage extends State<winningPage>{
   Future<void> initPaymentSheet()async{
     try{
       Future<Map<String,Object?>> makePaymentIntent()async{
+        print(widget.sendingData["wonId"]);
         var sendingData={
           "list_id":widget.sendingData["wonId"],
           "email":FirebaseAuth.instance.currentUser!.email,
@@ -50,7 +52,8 @@ class _winningPage extends State<winningPage>{
         return(json.decode(response.body));
       }
       else{print("Couldnt make payment intent");
-      print(response.body);}
+      print(response.body);
+      print(response.request);}
       return(someMap);
       }
       final data=await makePaymentIntent();
@@ -68,7 +71,7 @@ class _winningPage extends State<winningPage>{
       
     }
     catch(e){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text("Sorry an Error occoured")));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text("Sorry an Error occoured")));
       rethrow;
     }
   }
@@ -78,53 +81,52 @@ class _winningPage extends State<winningPage>{
   Widget build (BuildContext context){
   return Scaffold(
     appBar:AppBar(
+      toolbarHeight: 170,
       automaticallyImplyLeading: false,
-      title:const Text("CONGRATULATIONS!",
-      style: TextStyle(color: Colors.white),),
+      title: Text("CONGRATULATIONS!",
+      style: GoogleFonts.ubuntu(textStyle: TextStyle(color: Theme.of(context).colorScheme.outline, fontWeight: FontWeight.bold, fontSize: 30),)),
       centerTitle:true,
-      backgroundColor:const Color.fromARGB(255, 246, 179, 202),
+      backgroundColor:Theme.of(context).colorScheme.primary,
 
     ),
     body:Column(
       crossAxisAlignment:CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
+      //mainAxisAlignment: MainAxisAlignment.center,
       
-      children:[const Center(child: Text("YOU HAVE WON",
+      children:[
+      SizedBox(height: 45,),
+      const Center(child: Text("YOU HAVE WON!!",
       textAlign:TextAlign.center,
       style:TextStyle(fontSize: 35,
-      fontWeight:FontWeight.w500,
+      fontWeight:FontWeight.bold,
       color:Colors.lightGreen))),
 
+      SizedBox(height: 30),
       Container(margin:const EdgeInsetsDirectional.only(start:10,end:10),
-        decoration: BoxDecoration(
-          border: Border.all(),
-          borderRadius:BorderRadius.circular(10)
-        ),
         child: Center(child:Text(widget.sendingData["wonTitle"] as String,
         style: const TextStyle(
           fontSize:35,
           fontWeight:FontWeight.w500,
-          color: Colors.lightBlue
+          color: Colors.cyan
         
         ),
         ),
         ),
       ),
-      const Center(child: Text("AT JUST",
+      SizedBox(height: 10),
+      const Center(child: Text("At Just",
       textAlign:TextAlign.center,
-      style:TextStyle(fontSize: 35,
+      style:TextStyle(fontSize: 28,
       fontWeight:FontWeight.w500,
-      color:Colors.lightGreen))),
+      color:Colors.green
+      ))),
 
       Container(margin:const EdgeInsetsDirectional.only(start:10,end:10,bottom: 10),
-        decoration:BoxDecoration(border:Border.all(),
-        borderRadius:BorderRadius.circular(10)),
         child: Center(child:Text("\u{20B9}${widget.sendingData["wonBid"].toString()}",
         style: const TextStyle(
           fontSize:35,
           fontWeight:FontWeight.w500,
-          color: Colors.lightBlue
-        
+          color: Colors.cyan
         ),
         ),
         ),
@@ -141,29 +143,36 @@ class _winningPage extends State<winningPage>{
         fontSize: 25
 
       ),)),*/
-      DropdownMenu<String>(menuHeight:200,
-      width:250,
-      dropdownMenuEntries:listOfCharity.map<DropdownMenuEntry<String>>((String value){
-        return DropdownMenuEntry<String>(value: value, label: value);
-      }).toList(),
-      hintText:"CHOOSE A CHARITY",
-      onSelected: (value)async {
-        //int AccNo=int.parse(MapOfAccnt[value]??"0");
-        setState(() {
-          chosenCharity=value??"";
-          chosenAccnt=MapOfAccnt[value]??0;
-        });
-        await initPaymentSheet();
-        
-        
-        await Stripe.instance.presentPaymentSheet();
-        await checkListing();
-        if (chckBool==false){
-          Navigator.pushNamedAndRemoveUntil(context, "/homePage", (route) => false);
-        }
-        
-        
-      },)
+      const SizedBox(height: 20),
+      Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).colorScheme.tertiary), 
+          borderRadius:const BorderRadius.all(Radius.circular(10)),
+          ),
+        child: DropdownMenu<String>(menuHeight:200,
+        width:250,
+        dropdownMenuEntries:listOfCharity.map<DropdownMenuEntry<String>>((String value){
+          return DropdownMenuEntry<String>(value: value, label: value);
+        }).toList(),
+        hintText:"Choose a Charity",
+        onSelected: (value)async {
+          //int AccNo=int.parse(MapOfAccnt[value]??"0");
+          setState(() {
+            chosenCharity=value??"";
+            chosenAccnt=MapOfAccnt[value]??0;
+          });
+          await initPaymentSheet();
+          
+          
+          await Stripe.instance.presentPaymentSheet();
+          await checkListing();
+          if (chckBool==false){
+            Navigator.pushNamedAndRemoveUntil(context, "/homePage", (route) => false);
+          }
+          
+          
+        },),
+      )
 
       ]
   )
